@@ -1,8 +1,15 @@
 class EventsController < ApplicationController
+  # we ask the app to authenticate first before letting them in on any of the page.
+  before_filter :authenticate_user!, except: [:index]
   # GET /events
   # GET /events.json
   def index
-    @events = Event.all
+    # it will only show current user events. If we want all events, use Event.all
+    #if !user_signed_in?
+      @events = Event.all
+    #else
+      #@events = current_user.events.all
+    #end
 
     respond_to do |format|
       format.html # index.html.erb
@@ -24,7 +31,8 @@ class EventsController < ApplicationController
   # GET /events/new
   # GET /events/new.json
   def new
-    @event = Event.new
+    # we associate this event with current user
+    @event = current_user.events.new
 
     respond_to do |format|
       format.html # new.html.erb
@@ -34,13 +42,13 @@ class EventsController < ApplicationController
 
   # GET /events/1/edit
   def edit
-    @event = Event.find(params[:id])
+    @event = current_user.events.find(params[:id])
   end
 
   # POST /events
   # POST /events.json
   def create
-    @event = Event.new(params[:event])
+    @event = current_user.events.new(params[:event])
 
     respond_to do |format|
       if @event.save
@@ -56,7 +64,7 @@ class EventsController < ApplicationController
   # PUT /events/1
   # PUT /events/1.json
   def update
-    @event = Event.find(params[:id])
+    @event = current_user.events.find(params[:id])
 
     respond_to do |format|
       if @event.update_attributes(params[:event])
@@ -72,7 +80,7 @@ class EventsController < ApplicationController
   # DELETE /events/1
   # DELETE /events/1.json
   def destroy
-    @event = Event.find(params[:id])
+    @event = current_user.events.find(params[:id])
     @event.destroy
 
     respond_to do |format|
