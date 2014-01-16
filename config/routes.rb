@@ -1,4 +1,7 @@
 Cemrails::Application.routes.draw do
+  resources :events
+
+
   devise_for :users
 
   get 'about' => 'pages#about'
